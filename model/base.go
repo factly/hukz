@@ -6,6 +6,9 @@ import (
 	"gorm.io/gorm"
 )
 
+// ContextKey keys for contexts
+type ContextKey string
+
 // Base base model class
 type Base struct {
 	ID          uint            `gorm:"primary_key" json:"id"`
