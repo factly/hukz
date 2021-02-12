@@ -6,9 +6,11 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/factly/web-hooks-service/config"
 	"github.com/factly/web-hooks-service/model"
+	"github.com/factly/web-hooks-service/util"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/loggerx"
 	"github.com/factly/x/middlewarex"
@@ -70,6 +72,19 @@ func update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// check if new event name exist in db
+	if event.Name != result.Name {
+		newName := strings.ToLower(strings.TrimSpace(event.Name))
+		var sameNameCount int64
+		config.DB.Model(&model.Event{}).Where("name ILIKE (?)", newName).Count(&sameNameCount)
+
+		if sameNameCount > 0 {
+			loggerx.Error(err)
+			errorx.Render(w, errorx.Parser(errorx.GetMessage("event with same name exist", http.StatusUnprocessableEntity)))
+			return
+		}
+	}
+
 	updatedEvent := model.Event{
 		Base: model.Base{UpdatedByID: uint(uID)},
 		Name: event.Name,
@@ -80,6 +95,8 @@ func update(w http.ResponseWriter, r *http.Request) {
 		errorx.Render(w, errorx.Parser(errorx.DBError()))
 		return
 	}
+
+	util.SubscribeEvents(result.Name)
 
 	renderx.JSON(w, http.StatusOK, result)
 }

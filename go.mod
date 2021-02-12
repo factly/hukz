@@ -7,6 +7,7 @@ require (
 	github.com/factly/x v0.0.23
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/jinzhu/gorm v1.9.16
+	github.com/nats-io/nats.go v1.10.0
 	github.com/spf13/viper v1.7.1
 	github.com/swaggo/http-swagger v1.0.0
 	github.com/swaggo/swag v1.7.0

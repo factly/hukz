@@ -7,6 +7,7 @@ import (
 	"github.com/factly/web-hooks-service/config"
 	"github.com/factly/web-hooks-service/model"
 	"github.com/factly/web-hooks-service/service"
+	"github.com/factly/web-hooks-service/util"
 )
 
 // @title Webhooks API
@@ -31,6 +32,11 @@ func main() {
 
 	// apply database migrations
 	model.Migration()
+
+	util.ConnectNats()
+	defer util.NC.Close()
+
+	util.SubscribeExistingEvents()
 
 	r := service.RegisterRoutes()
 	if err := http.ListenAndServe(":7790", r); err != nil {

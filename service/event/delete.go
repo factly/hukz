@@ -6,6 +6,7 @@ import (
 
 	"github.com/factly/web-hooks-service/config"
 	"github.com/factly/web-hooks-service/model"
+	"github.com/factly/web-hooks-service/util"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/loggerx"
 	"github.com/factly/x/renderx"
@@ -43,6 +44,11 @@ func delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	config.DB.Delete(&result)
+
+	// reconnect nats server
+	util.NC.Close()
+	util.ConnectNats()
+	util.SubscribeExistingEvents()
 
 	renderx.JSON(w, http.StatusOK, nil)
 }
