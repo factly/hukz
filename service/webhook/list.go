@@ -32,7 +32,7 @@ func list(w http.ResponseWriter, r *http.Request) {
 
 	offset, limit := paginationx.Parse(r.URL.Query())
 
-	config.DB.Model(&model.Webhook{}).Count(&result.Total).Offset(offset).Limit(limit).Find(&result.Nodes)
+	config.DB.Model(&model.Webhook{}).Count(&result.Total).Offset(offset).Limit(limit).Preload("Events").Find(&result.Nodes)
 
 	renderx.JSON(w, http.StatusOK, result)
 }

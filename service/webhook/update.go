@@ -74,7 +74,7 @@ func update(w http.ResponseWriter, r *http.Request) {
 
 	newEvents := make([]model.Event, 0)
 	if len(webhook.EventIDs) > 0 {
-		config.DB.Model(&model.Webhook{}).Where(webhook.EventIDs).Find(&newEvents)
+		config.DB.Model(&model.Event{}).Where(webhook.EventIDs).Find(&newEvents)
 		if err = tx.Model(&result).Association("Events").Replace(&newEvents); err != nil {
 			tx.Rollback()
 			loggerx.Error(err)

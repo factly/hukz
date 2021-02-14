@@ -3,13 +3,13 @@ package util
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
 	"github.com/factly/web-hooks-service/config"
 	"github.com/factly/web-hooks-service/model"
 	"github.com/factly/x/requestx"
+	"github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/nats-io/nats.go"
 )
 
@@ -50,11 +50,32 @@ func FireWebhooks(m *nats.Msg) {
 
 	fmt.Printf("Received a [%v] event with data: %v\n", m.Subject, payload)
 
-	// TODO: find all the registered webhooks for given event and fire on each url through go routines
+	// Fetch event id
+	event := model.Event{}
+	err := config.DB.Model(&model.Event{}).Where("name = ?", m.Subject).First(&event).Error
+	if err != nil {
+		return
+	}
 
-	url := "https://cffaf321acf0589eee315b01d3087c70.m.pipedream.net" // test url
+	// find all the registered webhooks for given event
+	webhooks := make([]model.Webhook, 0)
+	config.DB.Model(&model.Webhook{}).Joins("JOIN webhook_events ON webhooks.id = webhook_events.webhook_id AND event_id = ?", event.ID).Find(&webhooks)
 
-	// Create a log entry in WebhookLog
+	for _, webhook := range webhooks {
+		go PostWebhook(webhook.URL, event.Name, whData)
+	}
+}
+
+// PostWebhook does POST request to given URL
+func PostWebhook(url string, event string, whData model.WebhookData) {
+	bArr, _ := json.Marshal(whData)
+
+	webHookLog := model.WebhookLog{
+		CreatedAt: time.Now(),
+		Event:     event,
+		URL:       url,
+		Data:      postgres.Jsonb{RawMessage: bArr},
+	}
 
 	resp, err := requestx.Request("POST", url, whData, nil)
 	if err != nil {
@@ -62,8 +83,8 @@ func FireWebhooks(m *nats.Msg) {
 		return
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		fmt.Println("webhook at ", url, "failed...")
-		return
-	}
+	webHookLog.ResponseStatusCode = resp.StatusCode
+
+	// Create a log entry for webhook
+	config.DB.Create(&webHookLog)
 }

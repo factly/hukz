@@ -374,4 +374,32 @@ paths:
       summary: Update a webhook by id
       tags:
       - Webhooks
+  /webhooks/logs:
+    get:
+      description: Get all webhooks logs
+      operationId: get-all-webhooks-logs
+      parameters:
+      - description: User ID
+        in: header
+        name: X-User
+        required: true
+        type: string
+      - description: limit per page
+        in: query
+        name: limit
+        type: string
+      - description: page number
+        in: query
+        name: page
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/webhook.paging'
+      summary: Show all webhooks logs
+      tags:
+      - Webhooks
 swagger: "2.0"

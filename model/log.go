@@ -13,5 +13,5 @@ type WebhookLog struct {
 	Event              string         `gorm:"column:event" json:"event"`
 	URL                string         `gorm:"column:url" json:"url"`
 	ResponseStatusCode int            `gorm:"column:response_status_code" json:"response_status_code"`
-	Payload            postgres.Jsonb `gorm:"column:payload" json:"payload" swaggertype:"primitive,string"`
+	Data               postgres.Jsonb `gorm:"column:data" json:"data" swaggertype:"primitive,string"`
 }

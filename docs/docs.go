@@ -326,6 +326,48 @@ var doc = `{
                 }
             }
         },
+        "/webhooks/logs": {
+            "get": {
+                "description": "Get all webhooks logs",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Show all webhooks logs",
+                "operationId": "get-all-webhooks-logs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "X-User",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page number",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/webhook.paging"
+                        }
+                    }
+                }
+            }
+        },
         "/webhooks/{webhook_id}": {
             "get": {
                 "description": "Get webhook by ID",

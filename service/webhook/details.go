@@ -36,7 +36,7 @@ func details(w http.ResponseWriter, r *http.Request) {
 	result.ID = uint(id)
 
 	// check record exists or not
-	if err = config.DB.First(&result).Error; err != nil {
+	if err = config.DB.Preload("Events").First(&result).Error; err != nil {
 		loggerx.Error(err)
 		errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
 		return

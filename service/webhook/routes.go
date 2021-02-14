@@ -18,6 +18,7 @@ func Router() chi.Router {
 	r := chi.NewRouter()
 
 	r.Get("/", list)
+	r.Get("/logs", logs)
 	r.Post("/", create)
 	r.Route("/{webhook_id}", func(r chi.Router) {
 		r.Get("/", details)
