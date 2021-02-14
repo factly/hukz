@@ -36,7 +36,9 @@ func main() {
 	util.ConnectNats()
 	defer util.NC.Close()
 
-	util.SubscribeExistingEvents()
+	if err := util.SubscribeExistingEvents(); err != nil {
+		log.Fatal(err)
+	}
 
 	r := service.RegisterRoutes()
 	if err := http.ListenAndServe(":7790", r); err != nil {

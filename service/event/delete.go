@@ -48,7 +48,12 @@ func delete(w http.ResponseWriter, r *http.Request) {
 	// reconnect nats server
 	util.NC.Close()
 	util.ConnectNats()
-	util.SubscribeExistingEvents()
+
+	if err = util.SubscribeExistingEvents(); err != nil {
+		loggerx.Error(err)
+		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
+		return
+	}
 
 	renderx.JSON(w, http.StatusOK, nil)
 }

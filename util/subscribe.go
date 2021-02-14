@@ -14,14 +14,18 @@ import (
 )
 
 // SubscribeEvents subscribe one or more events
-func SubscribeEvents(events ...string) {
+func SubscribeEvents(events ...string) error {
 	for _, event := range events {
-		NC.Subscribe(event, FireWebhooks)
+		_, err := NC.Subscribe(event, FireWebhooks)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // SubscribeExistingEvents subscribe existing events
-func SubscribeExistingEvents() {
+func SubscribeExistingEvents() error {
 	events := make([]model.Event, 0)
 
 	config.DB.Model(&model.Event{}).Find(&events)
@@ -33,13 +37,13 @@ func SubscribeExistingEvents() {
 		}
 	}
 
-	SubscribeEvents(eventNames...)
+	return SubscribeEvents(eventNames...)
 }
 
 // FireWebhooks fires webhook for a event
 func FireWebhooks(m *nats.Msg) {
 	var payload map[string]interface{}
-	json.Unmarshal(m.Data, &payload)
+	_ = json.Unmarshal(m.Data, &payload)
 
 	whData := model.WebhookData{}
 

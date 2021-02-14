@@ -96,7 +96,11 @@ func update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.SubscribeEvents(result.Name)
+	if err = util.SubscribeEvents(result.Name); err != nil {
+		loggerx.Error(err)
+		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
+		return
+	}
 
 	renderx.JSON(w, http.StatusOK, result)
 }
