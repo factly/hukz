@@ -6,8 +6,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/factly/web-hooks-service/config"
-	"github.com/factly/web-hooks-service/model"
+	"github.com/factly/hukz/config"
+	"github.com/factly/hukz/model"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/loggerx"
 	"github.com/factly/x/middlewarex"

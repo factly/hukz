@@ -1,7 +1,7 @@
 package event
 
 import (
-	"github.com/factly/web-hooks-service/model"
+	"github.com/factly/hukz/model"
 	"github.com/go-chi/chi"
 )
 

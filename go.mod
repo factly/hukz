@@ -1,4 +1,4 @@
-module github.com/factly/web-hooks-service
+module github.com/factly/hukz
 
 go 1.15
 

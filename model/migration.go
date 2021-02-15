@@ -1,6 +1,6 @@
 package model
 
-import "github.com/factly/web-hooks-service/config"
+import "github.com/factly/hukz/config"
 
 func Migration() {
 	_ = config.DB.AutoMigrate(
