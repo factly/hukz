@@ -1,12 +1,16 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"github.com/jinzhu/gorm/dialects/postgres"
+	"gorm.io/gorm"
+)
 
 // Event model
 type Event struct {
 	Base
-	Name     string    `gorm:"column:name" json:"name"`
-	Webhooks []Webhook `gorm:"many2many:webhook_events" json:"events,omitempty"`
+	Name     string         `gorm:"column:name" json:"name"`
+	Webhooks []Webhook      `gorm:"many2many:webhook_events" json:"events,omitempty"`
+	Tags     postgres.Jsonb `gorm:"column:tags" json:"tags" swaggertype:"primitive,string"`
 }
 
 var eventUser ContextKey = "event_user"

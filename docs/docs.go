@@ -496,6 +496,9 @@ var doc = `{
             "properties": {
                 "name": {
                     "type": "string"
+                },
+                "tags": {
+                    "type": "string"
                 }
             }
         },
@@ -537,6 +540,9 @@ var doc = `{
                 "name": {
                     "type": "string"
                 },
+                "tags": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 },
@@ -568,6 +574,9 @@ var doc = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "tags": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"
@@ -609,6 +618,9 @@ var doc = `{
                     "items": {
                         "type": "integer"
                     }
+                },
+                "tags": {
+                    "type": "string"
                 },
                 "url": {
                     "type": "string"

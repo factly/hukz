@@ -49,9 +49,19 @@ func create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// validate tags
+	var tags map[string]string
+	err = json.Unmarshal(webhook.Tags.RawMessage, &tags)
+	if err != nil {
+		loggerx.Error(err)
+		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
+		return
+	}
+
 	result := &model.Webhook{
 		URL:     webhook.URL,
 		Enabled: webhook.Enabled,
+		Tags:    webhook.Tags,
 	}
 
 	if len(webhook.EventIDs) > 0 {

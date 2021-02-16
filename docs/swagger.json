@@ -481,6 +481,9 @@
             "properties": {
                 "name": {
                     "type": "string"
+                },
+                "tags": {
+                    "type": "string"
                 }
             }
         },
@@ -522,6 +525,9 @@
                 "name": {
                     "type": "string"
                 },
+                "tags": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 },
@@ -553,6 +559,9 @@
                 },
                 "id": {
                     "type": "integer"
+                },
+                "tags": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"
@@ -594,6 +603,9 @@
                     "items": {
                         "type": "integer"
                     }
+                },
+                "tags": {
+                    "type": "string"
                 },
                 "url": {
                     "type": "string"

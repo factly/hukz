@@ -3,12 +3,14 @@ package webhook
 import (
 	"github.com/factly/hukz/model"
 	"github.com/go-chi/chi"
+	"github.com/jinzhu/gorm/dialects/postgres"
 )
 
 type webhook struct {
-	URL      string `json:"url" validate:"required"`
-	Enabled  bool   `json:"enabled"`
-	EventIDs []uint `json:"event_ids" validate:"required"`
+	URL      string         `json:"url" validate:"required"`
+	Enabled  bool           `json:"enabled"`
+	EventIDs []uint         `json:"event_ids" validate:"required"`
+	Tags     postgres.Jsonb `json:"tags" swaggertype:"primitive,string"`
 }
 
 var userContext model.ContextKey = "webhook_user"

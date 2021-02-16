@@ -85,9 +85,19 @@ func update(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// validate tags
+	var tags map[string]string
+	err = json.Unmarshal(event.Tags.RawMessage, &tags)
+	if err != nil {
+		loggerx.Error(err)
+		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
+		return
+	}
+
 	updatedEvent := model.Event{
 		Base: model.Base{UpdatedByID: uint(uID)},
 		Name: event.Name,
+		Tags: event.Tags,
 	}
 
 	if err = config.DB.WithContext(context.WithValue(r.Context(), userContext, uID)).Model(&result).Updates(updatedEvent).Error; err != nil {

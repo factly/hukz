@@ -3,10 +3,12 @@ package event
 import (
 	"github.com/factly/hukz/model"
 	"github.com/go-chi/chi"
+	"github.com/jinzhu/gorm/dialects/postgres"
 )
 
 type event struct {
-	Name string `json:"name" validate:"required"`
+	Name string         `json:"name" validate:"required"`
+	Tags postgres.Jsonb `json:"tags" swaggertype:"primitive,string"`
 }
 
 var userContext model.ContextKey = "event_user"

@@ -62,8 +62,18 @@ func create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// validate tags
+	var tags map[string]string
+	err = json.Unmarshal(event.Tags.RawMessage, &tags)
+	if err != nil {
+		loggerx.Error(err)
+		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
+		return
+	}
+
 	result := &model.Event{
 		Name: event.Name,
+		Tags: event.Tags,
 	}
 
 	if err = config.DB.WithContext(context.WithValue(r.Context(), userContext, uID)).Create(&result).Error; err != nil {

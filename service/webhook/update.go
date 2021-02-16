@@ -87,9 +87,19 @@ func update(w http.ResponseWriter, r *http.Request) {
 
 	tx.Model(&result).Select("Enabled").Omit("Events").Updates(model.Webhook{Enabled: webhook.Enabled})
 
+	// validate tags
+	var tags map[string]string
+	err = json.Unmarshal(webhook.Tags.RawMessage, &tags)
+	if err != nil {
+		loggerx.Error(err)
+		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
+		return
+	}
+
 	updatedWebhook := model.Webhook{
 		Base: model.Base{UpdatedByID: uint(uID)},
 		URL:  webhook.URL,
+		Tags: webhook.Tags,
 	}
 
 	if err = tx.Model(&result).Updates(updatedWebhook).Preload("Events").First(&result).Error; err != nil {
