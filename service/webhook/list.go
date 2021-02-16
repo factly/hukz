@@ -5,6 +5,9 @@ import (
 
 	"github.com/factly/hukz/config"
 	"github.com/factly/hukz/model"
+	"github.com/factly/x/errorx"
+	"github.com/factly/x/loggerx"
+	"github.com/factly/x/middlewarex"
 	"github.com/factly/x/paginationx"
 	"github.com/factly/x/renderx"
 )
@@ -27,12 +30,21 @@ type paging struct {
 // @Router /webhooks [get]
 func list(w http.ResponseWriter, r *http.Request) {
 
+	uID, err := middlewarex.GetUser(r.Context())
+	if err != nil {
+		loggerx.Error(err)
+		errorx.Render(w, errorx.Parser(errorx.Unauthorized()))
+		return
+	}
+
 	result := paging{}
 	result.Nodes = make([]model.Webhook, 0)
 
 	offset, limit := paginationx.Parse(r.URL.Query())
 
-	config.DB.Model(&model.Webhook{}).Count(&result.Total).Offset(offset).Limit(limit).Preload("Events").Find(&result.Nodes)
+	config.DB.Model(&model.Webhook{}).Where(&model.Webhook{
+		Base: model.Base{CreatedByID: uint(uID)},
+	}).Count(&result.Total).Offset(offset).Limit(limit).Preload("Events").Find(&result.Nodes)
 
 	renderx.JSON(w, http.StatusOK, result)
 }

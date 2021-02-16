@@ -63,22 +63,23 @@ func FireWebhooks(m *nats.Msg) {
 
 	// find all the registered webhooks for given event
 	webhooks := make([]model.Webhook, 0)
-	config.DB.Model(&model.Webhook{}).Joins("JOIN webhook_events ON webhooks.id = webhook_events.webhook_id AND event_id = ?", event.ID).Find(&webhooks)
+	config.DB.Model(&model.Webhook{}).Joins("JOIN webhook_events ON webhooks.id = webhook_events.webhook_id AND event_id = ?", event.ID).Where("enabled = true").Find(&webhooks)
 
 	for _, webhook := range webhooks {
-		go PostWebhook(webhook.URL, event.Name, whData)
+		go PostWebhook(webhook.URL, webhook.CreatedByID, event.Name, whData)
 	}
 }
 
 // PostWebhook does POST request to given URL
-func PostWebhook(url string, event string, whData model.WebhookData) {
+func PostWebhook(url string, createdByID uint, event string, whData model.WebhookData) {
 	bArr, _ := json.Marshal(whData)
 
 	webHookLog := model.WebhookLog{
-		CreatedAt: time.Now(),
-		Event:     event,
-		URL:       url,
-		Data:      postgres.Jsonb{RawMessage: bArr},
+		CreatedAt:   time.Now(),
+		Event:       event,
+		URL:         url,
+		Data:        postgres.Jsonb{RawMessage: bArr},
+		CreatedByID: createdByID,
 	}
 
 	resp, err := requestx.Request("POST", url, whData, nil)
