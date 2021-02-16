@@ -122,6 +122,10 @@ paths:
         in: query
         name: page
         type: string
+      - description: tags
+        in: query
+        name: tag
+        type: string
       produces:
       - application/json
       responses:
@@ -261,6 +265,10 @@ paths:
         in: query
         name: page
         type: string
+      - description: tags
+        in: query
+        name: tag
+        type: string
       produces:
       - application/json
       responses:
@@ -399,6 +407,10 @@ paths:
       - description: page number
         in: query
         name: page
+        type: string
+      - description: tags
+        in: query
+        name: tag
         type: string
       produces:
       - application/json

@@ -1,7 +1,9 @@
 package webhook
 
 import (
+	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/factly/hukz/config"
 	"github.com/factly/hukz/model"
@@ -26,6 +28,7 @@ type paging struct {
 // @Param X-User header string true "User ID"
 // @Param limit query string false "limit per page"
 // @Param page query string false "page number"
+// @Param tag query string false "tags"
 // @Success 200 {object} paging
 // @Router /webhooks [get]
 func list(w http.ResponseWriter, r *http.Request) {
@@ -42,9 +45,32 @@ func list(w http.ResponseWriter, r *http.Request) {
 
 	offset, limit := paginationx.Parse(r.URL.Query())
 
+	queryMap := r.URL.Query()
+
+	webhookList := make([]model.Webhook, 0)
 	config.DB.Model(&model.Webhook{}).Where(&model.Webhook{
 		Base: model.Base{CreatedByID: uint(uID)},
-	}).Count(&result.Total).Offset(offset).Limit(limit).Preload("Events").Find(&result.Nodes)
+	}).Count(&result.Total).Offset(offset).Limit(limit).Preload("Events").Find(&webhookList)
+
+	tags := queryMap["tag"]
+	if tags != nil {
+		for _, webhook := range webhookList {
+			var tagMap map[string]string
+			_ = json.Unmarshal(webhook.Tags.RawMessage, &tagMap)
+
+			for _, t := range tags {
+				toks := strings.Split(t, ":")
+				if val, found := tagMap[toks[0]]; found && val == toks[1] {
+					result.Nodes = append(result.Nodes, webhook)
+					break
+				}
+			}
+		}
+	} else {
+		result.Nodes = webhookList
+	}
+
+	result.Total = int64(len(result.Nodes))
 
 	renderx.JSON(w, http.StatusOK, result)
 }

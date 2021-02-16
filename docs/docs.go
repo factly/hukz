@@ -62,6 +62,12 @@ var doc = `{
                         "description": "page number",
                         "name": "page",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "tags",
+                        "name": "tag",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -268,6 +274,12 @@ var doc = `{
                         "description": "page number",
                         "name": "page",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "tags",
+                        "name": "tag",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -355,6 +367,12 @@ var doc = `{
                         "type": "string",
                         "description": "page number",
                         "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "tags",
+                        "name": "tag",
                         "in": "query"
                     }
                 ],
