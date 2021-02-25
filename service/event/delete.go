@@ -46,8 +46,10 @@ func delete(w http.ResponseWriter, r *http.Request) {
 	config.DB.Delete(&result)
 
 	// reconnect nats server
-	util.NC.Close()
-	util.ConnectNats()
+	if util.NC != nil {
+		util.NC.Close()
+		util.ConnectNats()
+	}
 
 	if err = util.SubscribeExistingEvents(); err != nil {
 		loggerx.Error(err)
