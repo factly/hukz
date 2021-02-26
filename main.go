@@ -8,6 +8,8 @@ import (
 	"github.com/factly/hukz/model"
 	"github.com/factly/hukz/service"
 	"github.com/factly/hukz/util"
+	"github.com/go-chi/chi"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // @title Webhooks API
@@ -39,6 +41,12 @@ func main() {
 	if err := util.SubscribeExistingEvents(); err != nil {
 		log.Fatal(err)
 	}
+
+	go func() {
+		promRouter := chi.NewRouter()
+		promRouter.Mount("/metrics", promhttp.Handler())
+		log.Fatal(http.ListenAndServe(":8001", promRouter))
+	}()
 
 	r := service.RegisterRoutes()
 	if err := http.ListenAndServe(":7790", r); err != nil {

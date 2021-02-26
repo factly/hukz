@@ -20,6 +20,7 @@ require (
 	github.com/nats-io/nats.go v1.10.0
 	github.com/onsi/ginkgo v1.10.1 // indirect
 	github.com/onsi/gomega v1.7.0 // indirect
+	github.com/prometheus/client_golang v0.9.3
 	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/swaggo/http-swagger v1.0.0
