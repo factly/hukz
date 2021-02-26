@@ -48,5 +48,4 @@ func SelectMock(mock sqlmock.Sqlmock, args ...driver.Value) {
 		WithArgs(args...).
 		WillReturnRows(sqlmock.NewRows(Columns).
 			AddRow(1, time.Now(), time.Now(), nil, 1, 1, Data["name"], Data["tags"]))
-
 }

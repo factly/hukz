@@ -72,6 +72,16 @@ func update(w http.ResponseWriter, r *http.Request) {
 
 	tx := config.DB.WithContext(context.WithValue(r.Context(), userContext, uID)).Begin()
 
+	// validate tags
+	var tags map[string]string
+	err = json.Unmarshal(webhook.Tags.RawMessage, &tags)
+	if err != nil {
+		tx.Rollback()
+		loggerx.Error(err)
+		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
+		return
+	}
+
 	newEvents := make([]model.Event, 0)
 	if len(webhook.EventIDs) > 0 {
 		config.DB.Model(&model.Event{}).Where(webhook.EventIDs).Find(&newEvents)
@@ -87,22 +97,13 @@ func update(w http.ResponseWriter, r *http.Request) {
 
 	tx.Model(&result).Select("Enabled").Omit("Events").Updates(model.Webhook{Enabled: webhook.Enabled})
 
-	// validate tags
-	var tags map[string]string
-	err = json.Unmarshal(webhook.Tags.RawMessage, &tags)
-	if err != nil {
-		loggerx.Error(err)
-		errorx.Render(w, errorx.Parser(errorx.DecodeError()))
-		return
-	}
-
 	updatedWebhook := model.Webhook{
 		Base: model.Base{UpdatedByID: uint(uID)},
 		URL:  webhook.URL,
 		Tags: webhook.Tags,
 	}
 
-	if err = tx.Model(&result).Updates(updatedWebhook).Preload("Events").First(&result).Error; err != nil {
+	if err = tx.Model(&result).Omit("Events").Updates(updatedWebhook).Preload("Events").First(&result).Error; err != nil {
 		tx.Rollback()
 		loggerx.Error(err)
 		errorx.Render(w, errorx.Parser(errorx.DBError()))
