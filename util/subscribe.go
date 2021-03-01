@@ -14,7 +14,7 @@ import (
 )
 
 // SubscribeEvents subscribe one or more events
-func SubscribeEvents(events ...string) error {
+var SubscribeEvents = func(events ...string) error {
 	for _, event := range events {
 		_, err := NC.Subscribe(event, FireWebhooks)
 		if err != nil {
@@ -25,7 +25,7 @@ func SubscribeEvents(events ...string) error {
 }
 
 // SubscribeExistingEvents subscribe existing events
-func SubscribeExistingEvents() error {
+var SubscribeExistingEvents = func() error {
 	events := make([]model.Event, 0)
 
 	config.DB.Model(&model.Event{}).Find(&events)

@@ -11,7 +11,7 @@ import (
 var NC *nats.EncodedConn
 
 // ConnectNats connect to nats server
-func ConnectNats() {
+var ConnectNats = func() {
 	var err error
 	nc, err := nats.Connect(viper.GetString("nats_url"))
 	if err != nil {
