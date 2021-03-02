@@ -21,14 +21,27 @@ services:
       - 8001:8001
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
+    environment:
+      - WAIT_HOSTS=postgres:5432, nats:4222
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    restart: unless-stopped
+    networks:
+      - intranet
+
+  hukz-migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate
     environment:
       - WAIT_HOSTS=postgres:5432
     volumes:
       - type: bind
         source: .
         target: /app
-    restart: unless-stopped
     networks:
       - intranet
 
