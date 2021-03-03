@@ -1,5 +1,12 @@
 # Hukz
 
+**Releasability:** [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=factly_hukz&metric=alert_status)](https://sonarcloud.io/dashboard?id=factly_hukz)  
+**Reliability:** [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=factly_hukz&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=factly_hukz) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=factly_hukz&metric=bugs)](https://sonarcloud.io/dashboard?id=factly_hukz)  
+**Security:** [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=factly_hukz&metric=security_rating)](https://sonarcloud.io/dashboard?id=factly_hukz) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=factly_hukz&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=factly_hukz)  
+**Maintainability:** [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=factly_hukz&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=factly_hukz) [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=factly_hukz&metric=sqale_index)](https://sonarcloud.io/dashboard?id=factly_hukz) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=factly_hukz&metric=code_smells)](https://sonarcloud.io/dashboard?id=factly_hukz)  
+**Other:** [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=factly_hukz&metric=ncloc)](https://sonarcloud.io/dashboard?id=factly_hukz) [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=factly_hukz&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=factly_hukz) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=factly_hukz&metric=coverage)](https://sonarcloud.io/dashboard?id=factly_hukz)  
+
+
 A simple & lightweight service implemented in go to add webhooks in your application. This service is intended to fire webhooks on different events that are registered.
 
 ### Concepts
