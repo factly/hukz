@@ -18,7 +18,7 @@ func init() {
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "Starts server for dega-server.",
+	Short: "Starts server for hukz.",
 	Run: func(cmd *cobra.Command, args []string) {
 		// setup database
 		config.SetupDB()
