@@ -11,7 +11,7 @@ func SetupVars() {
 
 	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
-	viper.SetEnvPrefix("webhooks")
+	viper.SetEnvPrefix("hukz")
 	viper.AutomaticEnv()
 
 	err := viper.ReadInConfig()

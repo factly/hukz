@@ -36,4 +36,4 @@ MODE=development
 ```
 
 * Config file should be stored in project root folder with name config (ext can be yml, json, env)
-* Environment variables can also be set for configuration parameters.
+* Environment variables can also be set for configuration parameters with `HUKZ_` prefix to above variables.
