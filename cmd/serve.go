@@ -37,7 +37,7 @@ var serveCmd = &cobra.Command{
 		}()
 
 		r := service.RegisterRoutes()
-		if err := http.ListenAndServe(":7790", r); err != nil {
+		if err := http.ListenAndServe(":8000", r); err != nil {
 			log.Fatal(err)
 		}
 	},
