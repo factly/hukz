@@ -1,4 +1,4 @@
-FROM golang:1.13-alpine AS build_base
+FROM golang:1.14.2-alpine3.11 AS build_base
 
 RUN apk add --no-cache git
 
@@ -20,7 +20,7 @@ COPY . .
 RUN go build -o ./out/hukz .
 
 # Start fresh from a smaller image
-FROM alpine:3.9 
+FROM alpine:3.12 
 RUN apk add ca-certificates
 
 COPY --from=build_base /tmp/hukz/out/hukz /app/hukz
