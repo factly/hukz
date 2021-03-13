@@ -31,6 +31,8 @@ DATABASE_PORT=5432
 DATABASE_SSL_MODE=disable
 
 NATS_URL=nats://nats:4222
+NATS_USER_NAME=natsuser
+NATS_USER_PASSWORD=natspassword
 
 MODE=development
 ```
