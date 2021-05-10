@@ -33,9 +33,23 @@ DATABASE_SSL_MODE=disable
 NATS_URL=nats://nats:4222
 NATS_USER_NAME=natsuser
 NATS_USER_PASSWORD=natspassword
+QUEUE_GROUP=dega
 
 MODE=development
 ```
 
 * Config file should be stored in project root folder with name config (ext can be yml, json, env)
 * Environment variables can also be set for configuration parameters with `HUKZ_` prefix to above variables.
+
+### Example
+Create event in `tag.created` in hukz service and register webhook with tag `app:example`. Now in the publisher server application can send `tag.created` event to NATS, whenever a tag is created as follows:
+
+```go
+if err = util.NC.Publish("tag.created", result); err != nil {
+    log.Fatal(err)
+}
+```
+
+Hukz service will handle firing webhooks to the URLs which are registered to `tag.created` event. Also, you can get logs of all webhooks fired on `/webhooks/logs` endpoint.
+
+All events, webhooks and logs can be filtered by tags field. Multiple `tag` query params can be passed with `key:value` syntax to get entities which has given tags. 

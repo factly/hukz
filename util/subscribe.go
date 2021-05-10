@@ -11,12 +11,13 @@ import (
 	"github.com/factly/x/requestx"
 	"github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/nats-io/nats.go"
+	"github.com/spf13/viper"
 )
 
 // SubscribeEvents subscribe one or more events
 var SubscribeEvents = func(events ...string) error {
 	for _, event := range events {
-		_, err := NC.Subscribe(event, FireWebhooks)
+		_, err := NC.QueueSubscribe(event, viper.GetString("queue_group"), FireWebhooks)
 		if err != nil {
 			return err
 		}

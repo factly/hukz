@@ -43,4 +43,20 @@ func SetupVars() {
 		log.Fatal("please provide database_ssl_mode config param")
 	}
 
+	if !viper.IsSet("nats_url") {
+		log.Fatal("please provide nats_url config param")
+	}
+
+	if !viper.IsSet("nats_user_name") {
+		log.Fatal("please provide nats_user_name config param")
+	}
+
+	if !viper.IsSet("nats_user_password") {
+		log.Fatal("please provide nats_user_password config param")
+	}
+
+	if !viper.IsSet("queue_group") {
+		log.Fatal("please provide queue_group config param")
+	}
+
 }
