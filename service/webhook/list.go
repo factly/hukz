@@ -50,7 +50,7 @@ func list(w http.ResponseWriter, r *http.Request) {
 	webhookList := make([]model.Webhook, 0)
 	config.DB.Model(&model.Webhook{}).Where(&model.Webhook{
 		Base: model.Base{CreatedByID: uint(uID)},
-	}).Count(&result.Total).Offset(offset).Limit(limit).Preload("Events").Find(&webhookList)
+	}).Count(&result.Total).Preload("Events").Find(&webhookList)
 
 	tags := queryMap["tag"]
 	if tags != nil {
@@ -73,6 +73,19 @@ func list(w http.ResponseWriter, r *http.Request) {
 		result.Nodes = webhookList
 	}
 
+	var end int
+	if limit+offset > len(result.Nodes) {
+		end = len(result.Nodes)
+	} else {
+		end = limit + offset
+	}
+	if offset > len(result.Nodes) {
+		offset = len(result.Nodes)
+	} else if offset < 0 {
+		offset = 0
+	}
+
+	result.Nodes = result.Nodes[offset:end]
 	result.Total = int64(len(result.Nodes))
 
 	renderx.JSON(w, http.StatusOK, result)

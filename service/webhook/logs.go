@@ -50,7 +50,7 @@ func logs(w http.ResponseWriter, r *http.Request) {
 	webhookLogsList := make([]model.WebhookLog, 0)
 	config.DB.Model(&model.WebhookLog{}).Where(&model.WebhookLog{
 		CreatedByID: uint(uID),
-	}).Count(&result.Total).Offset(offset).Limit(limit).Order("created_at DESC").Find(&webhookLogsList)
+	}).Order("created_at DESC").Find(&webhookLogsList)
 
 	tags := queryMap["tag"]
 	if tags != nil {
@@ -73,6 +73,19 @@ func logs(w http.ResponseWriter, r *http.Request) {
 		result.Nodes = webhookLogsList
 	}
 
+	var end int
+	if limit+offset > len(result.Nodes) {
+		end = len(result.Nodes)
+	} else {
+		end = limit + offset
+	}
+	if offset > len(result.Nodes) {
+		offset = len(result.Nodes)
+	} else if offset < 0 {
+		offset = 0
+	}
+
+	result.Nodes = result.Nodes[offset:end]
 	result.Total = int64(len(result.Nodes))
 
 	renderx.JSON(w, http.StatusOK, result)
