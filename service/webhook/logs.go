@@ -58,12 +58,15 @@ func logs(w http.ResponseWriter, r *http.Request) {
 			var tagMap map[string]string
 			_ = json.Unmarshal(webhook.Tags.RawMessage, &tagMap)
 
+			count := 0
 			for _, t := range tags {
 				toks := strings.Split(t, ":")
 				if val, found := tagMap[toks[0]]; found && val == toks[1] {
-					result.Nodes = append(result.Nodes, webhook)
-					break
+					count++
 				}
+			}
+			if count == len(tags) {
+				result.Nodes = append(result.Nodes, webhook)
 			}
 		}
 	} else {
