@@ -38,7 +38,7 @@ func list(w http.ResponseWriter, r *http.Request) {
 	queryMap := r.URL.Query()
 
 	eventList := make([]model.Event, 0)
-	config.DB.Model(&model.Event{}).Offset(offset).Limit(limit).Find(&eventList)
+	config.DB.Model(&model.Event{}).Find(&eventList)
 
 	tags := queryMap["tag"]
 	if tags != nil {
@@ -46,18 +46,34 @@ func list(w http.ResponseWriter, r *http.Request) {
 			var tagMap map[string]string
 			_ = json.Unmarshal(event.Tags.RawMessage, &tagMap)
 
+			count := 0
 			for _, t := range tags {
 				toks := strings.Split(t, ":")
 				if val, found := tagMap[toks[0]]; found && val == toks[1] {
-					result.Nodes = append(result.Nodes, event)
-					break
+					count++
 				}
+			}
+			if count == len(tags) {
+				result.Nodes = append(result.Nodes, event)
 			}
 		}
 	} else {
 		result.Nodes = eventList
 	}
 
+	var end int
+	if limit+offset > len(result.Nodes) {
+		end = len(result.Nodes)
+	} else {
+		end = limit + offset
+	}
+	if offset > len(result.Nodes) {
+		offset = len(result.Nodes)
+	} else if offset < 0 {
+		offset = 0
+	}
+
+	result.Nodes = result.Nodes[offset:end]
 	result.Total = int64(len(result.Nodes))
 
 	renderx.JSON(w, http.StatusOK, result)

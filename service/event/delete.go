@@ -1,6 +1,7 @@
 package event
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -40,6 +41,17 @@ func delete(w http.ResponseWriter, r *http.Request) {
 	if err = config.DB.First(&result).Error; err != nil {
 		loggerx.Error(err)
 		errorx.Render(w, errorx.Parser(errorx.RecordNotFound()))
+		return
+	}
+
+	// check if event is associated with webhook
+	event := new(model.Event)
+	event.ID = uint(id)
+	totAssociated := config.DB.Model(event).Association("Webhooks").Count()
+
+	if totAssociated != 0 {
+		loggerx.Error(errors.New("event is associated with webhook"))
+		errorx.Render(w, errorx.Parser(errorx.CannotDelete("event", "webhook")))
 		return
 	}
 
