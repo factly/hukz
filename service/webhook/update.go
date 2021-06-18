@@ -98,6 +98,7 @@ func update(w http.ResponseWriter, r *http.Request) {
 	tx.Model(&result).Select("Enabled").Omit("Events").Updates(model.Webhook{Enabled: webhook.Enabled})
 
 	updatedWebhook := model.Webhook{
+		Name: webhook.Name,
 		Base: model.Base{UpdatedByID: uint(uID)},
 		URL:  webhook.URL,
 		Tags: webhook.Tags,
