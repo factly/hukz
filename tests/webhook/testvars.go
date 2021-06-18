@@ -11,6 +11,7 @@ import (
 )
 
 var Data = map[string]interface{}{
+	"name":      "Test WH",
 	"url":       "testurl.com",
 	"enabled":   true,
 	"event_ids": []uint{1},
@@ -20,6 +21,7 @@ var Data = map[string]interface{}{
 }
 
 var respData = map[string]interface{}{
+	"name":    "Test WH",
 	"url":     "testurl.com",
 	"enabled": true,
 	"tags": postgres.Jsonb{
@@ -29,6 +31,7 @@ var respData = map[string]interface{}{
 
 var webhookList = []map[string]interface{}{
 	{
+		"name":      "Test WH1",
 		"url":       "testurl1.com",
 		"enabled":   true,
 		"event_ids": []uint{1},
@@ -37,6 +40,7 @@ var webhookList = []map[string]interface{}{
 		},
 	},
 	{
+		"name":      "Test WH2",
 		"url":       "testurl2.com",
 		"enabled":   true,
 		"event_ids": []uint{1},
@@ -50,7 +54,7 @@ var invalidData = map[string]interface{}{
 	"nae": "a",
 }
 
-var Columns = []string{"id", "created_at", "updated_at", "deleted_at", "created_by_id", "updated_by_id", "url", "enabled", "tags"}
+var Columns = []string{"id", "created_at", "updated_at", "deleted_at", "created_by_id", "updated_by_id", "name", "url", "enabled", "tags"}
 
 var selectQuery = `SELECT (.+) FROM "webhooks"`
 var deleteQuery = regexp.QuoteMeta(`UPDATE "webhooks" SET "deleted_at"=`)
@@ -63,7 +67,7 @@ func SelectMock(mock sqlmock.Sqlmock, args ...driver.Value) {
 	mock.ExpectQuery(selectQuery).
 		WithArgs(args...).
 		WillReturnRows(sqlmock.NewRows(Columns).
-			AddRow(1, time.Now(), time.Now(), nil, 1, 1, Data["url"], Data["enabled"], Data["tags"]))
+			AddRow(1, time.Now(), time.Now(), nil, 1, 1, Data["name"], Data["url"], Data["enabled"], Data["tags"]))
 }
 
 func EventAssociationMock(mock sqlmock.Sqlmock, args ...driver.Value) {

@@ -48,8 +48,8 @@ func TestWebhookList(t *testing.T) {
 
 		mock.ExpectQuery(selectQuery).
 			WillReturnRows(sqlmock.NewRows(Columns).
-				AddRow(1, time.Now(), time.Now(), nil, 1, 1, webhookList[0]["url"], webhookList[0]["enabled"], webhookList[0]["tags"]).
-				AddRow(2, time.Now(), time.Now(), nil, 1, 1, webhookList[1]["url"], webhookList[1]["enabled"], webhookList[1]["tags"]))
+				AddRow(1, time.Now(), time.Now(), nil, 1, 1, webhookList[0]["name"], webhookList[0]["url"], webhookList[0]["enabled"], webhookList[0]["tags"]).
+				AddRow(2, time.Now(), time.Now(), nil, 1, 1, webhookList[1]["name"], webhookList[1]["url"], webhookList[1]["enabled"], webhookList[1]["tags"]))
 
 		EventAssociationMock(mock)
 
@@ -69,8 +69,8 @@ func TestWebhookList(t *testing.T) {
 
 		mock.ExpectQuery(selectQuery).
 			WillReturnRows(sqlmock.NewRows(Columns).
-				AddRow(1, time.Now(), time.Now(), nil, 1, 1, webhookList[0]["url"], webhookList[0]["enabled"], webhookList[0]["tags"]).
-				AddRow(2, time.Now(), time.Now(), nil, 1, 1, webhookList[1]["url"], webhookList[1]["enabled"], webhookList[1]["tags"]))
+				AddRow(1, time.Now(), time.Now(), nil, 1, 1, webhookList[0]["name"], webhookList[0]["url"], webhookList[0]["enabled"], webhookList[0]["tags"]).
+				AddRow(2, time.Now(), time.Now(), nil, 1, 1, webhookList[1]["name"], webhookList[1]["url"], webhookList[1]["enabled"], webhookList[1]["tags"]))
 
 		mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "webhook_events"`)).
 			WithArgs(sqlmock.AnyArg(), sqlmock.AnyArg()).

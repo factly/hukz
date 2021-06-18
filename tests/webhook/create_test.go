@@ -62,7 +62,7 @@ func TestWebhookCreate(t *testing.T) {
 		mock.ExpectBegin()
 
 		mock.ExpectQuery(`INSERT INTO "webhooks"`).
-			WithArgs(tests.AnyTime{}, tests.AnyTime{}, nil, 1, 1, Data["url"], Data["enabled"], Data["tags"]).
+			WithArgs(tests.AnyTime{}, tests.AnyTime{}, nil, 1, 1, Data["name"], Data["url"], Data["enabled"], Data["tags"]).
 			WillReturnRows(sqlmock.
 				NewRows([]string{"id"}).
 				AddRow(1))
