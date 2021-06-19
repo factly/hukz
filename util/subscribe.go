@@ -3,6 +3,7 @@ package util
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"strings"
 	"time"
 
@@ -90,7 +91,17 @@ func PostWebhook(wh model.Webhook, event string, whData model.WebhookData) {
 		return
 	}
 
+	defer resp.Body.Close()
+
 	webHookLog.ResponseStatusCode = resp.StatusCode
+	body_bytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+
+	webHookLog.ResponseBody = postgres.Jsonb{
+		RawMessage: body_bytes,
+	}
 
 	// Create a log entry for webhook
 	config.DB.Create(&webHookLog)
