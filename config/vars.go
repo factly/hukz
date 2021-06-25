@@ -60,3 +60,7 @@ func SetupVars() {
 	}
 
 }
+
+func DegaToGoogleChat() bool {
+	return viper.IsSet("dega_to_google_chat") && viper.GetBool("dega_to_google_chat")
+}
