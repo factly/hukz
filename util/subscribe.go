@@ -126,7 +126,7 @@ func PostWebhook(wh model.Webhook, event string, whData model.WebhookData) {
 			return
 		}
 	} else if strings.Contains(wh.URL, "hooks.slack.com") {
-		message := slack.DefaultMessage(whData)
+		message, _ := slack.DefaultMessage(whData)
 		if resp, err = requestx.Request("POST", wh.URL, message, nil); err != nil {
 			fmt.Println("webhook at ", wh.URL, "failed...")
 			return
