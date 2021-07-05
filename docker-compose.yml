@@ -7,7 +7,7 @@ services:
       - "5432:5432"
     volumes:
       - ./pg-init-scripts:/docker-entrypoint-initdb.d
-      - ~/factly/factly-apps/postgresql:/var/lib/postgresql/data/
+      - ~/factly/hukz/postgresql:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

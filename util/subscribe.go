@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"strings"
 	"time"
 
 	"github.com/factly/hukz/config"
 	"github.com/factly/hukz/model"
+	googlechat "github.com/factly/x/hukzx/google_chat"
+	"github.com/factly/x/hukzx/slack"
 	"github.com/factly/x/requestx"
 	"github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/nats-io/nats.go"
@@ -85,18 +88,69 @@ func PostWebhook(wh model.Webhook, event string, whData model.WebhookData) {
 		Tags:        wh.Tags,
 	}
 
-	resp, err := requestx.Request("POST", wh.URL, whData, nil)
-	if err != nil {
-		fmt.Println("webhook at ", wh.URL, "failed...")
-		return
+	var resp *http.Response
+	var err error
+	if strings.Contains(wh.URL, "chat.googleapis.com") && config.DegaToGoogleChat() {
+		data, err := googlechat.ToMessage(whData)
+		if err != nil {
+			fmt.Println("webhook at ", wh.URL, "failed...")
+			return
+		}
+
+		bArr, _ = json.Marshal(data)
+		webHookLog.Data = postgres.Jsonb{RawMessage: bArr}
+
+		if resp, err = requestx.Request("POST", wh.URL, data, nil); err != nil {
+			fmt.Println("webhook at ", wh.URL, "failed...")
+			return
+		}
+	} else if strings.Contains(wh.URL, "hooks.slack.com") && config.DegaToSlack() {
+		data, err := slack.ToMessage(whData)
+		if err != nil {
+			fmt.Println("webhook at ", wh.URL, "failed...")
+			return
+		}
+
+		bArr, _ = json.Marshal(data)
+		webHookLog.Data = postgres.Jsonb{RawMessage: bArr}
+
+		if resp, err = requestx.Request("POST", wh.URL, data, nil); err != nil {
+			fmt.Println("webhook at ", wh.URL, "failed...")
+			return
+		}
+
+	} else if strings.Contains(wh.URL, "chat.googleapis.com") {
+		message := googlechat.DefaultMessage(whData)
+		if resp, err = requestx.Request("POST", wh.URL, message, nil); err != nil {
+			fmt.Println("webhook at ", wh.URL, "failed...")
+			return
+		}
+	} else if strings.Contains(wh.URL, "hooks.slack.com") {
+		message, _ := slack.DefaultMessage(whData)
+		if resp, err = requestx.Request("POST", wh.URL, message, nil); err != nil {
+			fmt.Println("webhook at ", wh.URL, "failed...")
+			return
+		}
+
+	} else {
+		if resp, err = requestx.Request("POST", wh.URL, whData, nil); err != nil {
+			fmt.Println("webhook at ", wh.URL, "failed...")
+			return
+		}
 	}
 
 	defer resp.Body.Close()
 
 	webHookLog.ResponseStatusCode = resp.StatusCode
+
 	body_bytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		fmt.Println(err.Error())
 		return
+	}
+
+	if strings.Contains(wh.URL, "hooks.slack.com") {
+		body_bytes = []byte(fmt.Sprint(`{"data":"`, string(body_bytes), `"}`))
 	}
 
 	webHookLog.ResponseBody = postgres.Jsonb{
