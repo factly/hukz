@@ -593,6 +593,9 @@ var doc = `{
                 "id": {
                     "type": "integer"
                 },
+                "name": {
+                    "type": "string"
+                },
                 "tags": {
                     "type": "string"
                 },
@@ -636,6 +639,9 @@ var doc = `{
                     "items": {
                         "type": "integer"
                     }
+                },
+                "name": {
+                    "type": "string"
                 },
                 "tags": {
                     "type": "string"

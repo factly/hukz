@@ -146,7 +146,7 @@ func TestWebhookUpdate(t *testing.T) {
 			WillReturnResult(sqlmock.NewResult(1, 1))
 
 		mock.ExpectExec(`UPDATE \"webhooks\"`).
-			WithArgs(tests.AnyTime{}, 1, Data["url"], Data["tags"], 1).
+			WithArgs(tests.AnyTime{}, 1, Data["name"], Data["url"], Data["tags"], 1).
 			WillReturnResult(sqlmock.NewResult(1, 1))
 
 		SelectMock(mock)

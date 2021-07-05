@@ -8,6 +8,7 @@ import (
 // Webhook model
 type Webhook struct {
 	Base
+	Name    string         `gorm:"column:name" json:"name"`
 	URL     string         `gorm:"column:url" json:"url"`
 	Enabled bool           `gorm:"column:enabled" json:"enabled"`
 	Events  []Event        `gorm:"many2many:webhook_events;" json:"events"`

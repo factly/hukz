@@ -59,6 +59,7 @@ func create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := &model.Webhook{
+		Name:    webhook.Name,
 		URL:     webhook.URL,
 		Enabled: webhook.Enabled,
 		Tags:    webhook.Tags,
