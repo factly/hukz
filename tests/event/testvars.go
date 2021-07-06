@@ -10,7 +10,8 @@ import (
 )
 
 var Data = map[string]interface{}{
-	"name": "event.done",
+	"name":  "Event Done",
+	"event": "event.done",
 	"tags": postgres.Jsonb{
 		RawMessage: []byte(`{"test":"tag"}`),
 	},
@@ -18,13 +19,15 @@ var Data = map[string]interface{}{
 
 var eventList = []map[string]interface{}{
 	{
-		"name": "event.done1",
+		"name":  "Event Done 1",
+		"event": "event.done1",
 		"tags": postgres.Jsonb{
 			RawMessage: []byte(`{"test":"tag1"}`),
 		},
 	},
 	{
-		"name": "event.done2",
+		"name":  "Event Done 2",
+		"event": "event.done2",
 		"tags": postgres.Jsonb{
 			RawMessage: []byte(`{"test":"tag2"}`),
 		},
@@ -35,7 +38,7 @@ var invalidData = map[string]interface{}{
 	"nae": "a",
 }
 
-var Columns = []string{"id", "created_at", "updated_at", "deleted_at", "created_by_id", "updated_by_id", "name", "tags"}
+var Columns = []string{"id", "created_at", "updated_at", "deleted_at", "created_by_id", "updated_by_id", "name", "event", "tags"}
 
 var selectQuery = regexp.QuoteMeta(`SELECT * FROM "events"`)
 var deleteQuery = regexp.QuoteMeta(`UPDATE "events" SET "deleted_at"=`)
@@ -47,5 +50,5 @@ func SelectMock(mock sqlmock.Sqlmock, args ...driver.Value) {
 	mock.ExpectQuery(selectQuery).
 		WithArgs(args...).
 		WillReturnRows(sqlmock.NewRows(Columns).
-			AddRow(1, time.Now(), time.Now(), nil, 1, 1, Data["name"], Data["tags"]))
+			AddRow(1, time.Now(), time.Now(), nil, 1, 1, Data["name"], Data["event"], Data["tags"]))
 }
