@@ -66,11 +66,11 @@ func TestEventUpdate(t *testing.T) {
 	t.Run("event name exist in db", func(t *testing.T) {
 		SelectMock(mock, 1)
 
-		mock.ExpectQuery(regexp.QuoteMeta(`SELECT count(1) FROM "events"`)).
+		mock.ExpectQuery(regexp.QuoteMeta(`SELECT count(*) FROM "events"`)).
 			WillReturnRows(sqlmock.NewRows([]string{"count"}).
 				AddRow(1))
 
-		Data["name"] = "event.new"
+		Data["event"] = "event.new"
 		e.PUT(path).
 			WithPath("event_id", "1").
 			WithHeader("X-User", "1").
@@ -78,7 +78,7 @@ func TestEventUpdate(t *testing.T) {
 			Expect().
 			Status(http.StatusUnprocessableEntity)
 		tests.ExpectationsMet(t, mock)
-		Data["name"] = "event.done"
+		Data["event"] = "event.done"
 	})
 
 	t.Run("tags invalid in event body", func(t *testing.T) {
@@ -103,9 +103,11 @@ func TestEventUpdate(t *testing.T) {
 	t.Run("updated event", func(t *testing.T) {
 		SelectMock(mock, 1)
 
+		mock.ExpectBegin()
 		mock.ExpectExec(`UPDATE \"events\"`).
-			WithArgs(tests.AnyTime{}, 1, Data["name"], Data["tags"], 1).
+			WithArgs(tests.AnyTime{}, 1, Data["name"], Data["event"], Data["tags"], 1).
 			WillReturnResult(sqlmock.NewResult(1, 1))
+		mock.ExpectCommit()
 
 		e.PUT(path).
 			WithPath("event_id", "1").

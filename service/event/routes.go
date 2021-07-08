@@ -7,8 +7,9 @@ import (
 )
 
 type event struct {
-	Name string         `json:"name" validate:"required"`
-	Tags postgres.Jsonb `json:"tags" swaggertype:"primitive,string"`
+	Name  string         `json:"name"`
+	Event string         `json:"event" validate:"required"`
+	Tags  postgres.Jsonb `json:"tags" swaggertype:"primitive,string"`
 }
 
 var userContext model.ContextKey = "event_user"

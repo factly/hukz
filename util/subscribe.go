@@ -38,7 +38,7 @@ var SubscribeExistingEvents = func() error {
 	eventNames := make([]string, 0)
 	if len(events) > 0 {
 		for _, event := range events {
-			eventNames = append(eventNames, event.Name)
+			eventNames = append(eventNames, event.Event)
 		}
 	}
 
@@ -61,7 +61,7 @@ func FireWebhooks(m *nats.Msg) {
 
 	// Fetch event id
 	event := model.Event{}
-	err := config.DB.Model(&model.Event{}).Where("name = ?", m.Subject).First(&event).Error
+	err := config.DB.Model(&model.Event{}).Where("event = ?", m.Subject).First(&event).Error
 	if err != nil {
 		return
 	}
@@ -71,7 +71,7 @@ func FireWebhooks(m *nats.Msg) {
 	config.DB.Model(&model.Webhook{}).Joins("JOIN webhook_events ON webhooks.id = webhook_events.webhook_id AND event_id = ?", event.ID).Where("enabled = true").Find(&webhooks)
 
 	for _, webhook := range webhooks {
-		go PostWebhook(webhook, event.Name, whData)
+		go PostWebhook(webhook, event.Event, whData)
 	}
 }
 

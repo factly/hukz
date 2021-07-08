@@ -3,6 +3,7 @@ package event
 import (
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -43,12 +44,34 @@ func TestEventDelete(t *testing.T) {
 		tests.ExpectationsMet(t, mock)
 	})
 
+	t.Run("event is associated with some webhooks", func(t *testing.T) {
+		SelectMock(mock, 1)
+
+		mock.ExpectQuery(regexp.QuoteMeta(`SELECT count(*) FROM "webhooks"`)).
+			WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(1))
+
+		util.SubscribeExistingEvents = func() error { return nil }
+
+		e.DELETE(path).
+			WithPath("event_id", "1").
+			WithHeader("X-User", "1").
+			Expect().
+			Status(http.StatusUnprocessableEntity)
+
+		tests.ExpectationsMet(t, mock)
+	})
+
 	t.Run("delete event", func(t *testing.T) {
 		SelectMock(mock, 1)
 
+		mock.ExpectQuery(regexp.QuoteMeta(`SELECT count(*) FROM "webhooks"`)).
+			WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(0))
+
+		mock.ExpectBegin()
 		mock.ExpectExec(deleteQuery).
 			WithArgs(tests.AnyTime{}, 1).
 			WillReturnResult(sqlmock.NewResult(1, 1))
+		mock.ExpectCommit()
 
 		util.SubscribeExistingEvents = func() error { return nil }
 

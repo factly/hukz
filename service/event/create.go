@@ -52,13 +52,13 @@ func create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if new event name exist in db
-	newName := strings.ToLower(strings.TrimSpace(event.Name))
+	newName := strings.ToLower(strings.TrimSpace(event.Event))
 	var sameNameCount int64
-	config.DB.Model(&model.Event{}).Where("name ILIKE (?)", newName).Count(&sameNameCount)
+	config.DB.Model(&model.Event{}).Where("event ILIKE (?)", newName).Count(&sameNameCount)
 
 	if sameNameCount > 0 {
 		loggerx.Error(err)
-		errorx.Render(w, errorx.Parser(errorx.GetMessage("event with same name exist", http.StatusUnprocessableEntity)))
+		errorx.Render(w, errorx.Parser(errorx.GetMessage("event with same event string exist", http.StatusUnprocessableEntity)))
 		return
 	}
 
@@ -72,8 +72,9 @@ func create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := &model.Event{
-		Name: event.Name,
-		Tags: event.Tags,
+		Name:  event.Name,
+		Event: event.Event,
+		Tags:  event.Tags,
 	}
 
 	if err = config.DB.WithContext(context.WithValue(r.Context(), userContext, uID)).Create(&result).Error; err != nil {
@@ -82,7 +83,7 @@ func create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = util.SubscribeEvents(result.Name); err != nil {
+	if err = util.SubscribeEvents(result.Event); err != nil {
 		loggerx.Error(err)
 		errorx.Render(w, errorx.Parser(errorx.InternalServerError()))
 		return

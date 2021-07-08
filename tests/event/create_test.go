@@ -40,7 +40,7 @@ func TestEventCreate(t *testing.T) {
 	})
 
 	t.Run("same name event already exist in db", func(t *testing.T) {
-		mock.ExpectQuery(regexp.QuoteMeta(`SELECT count(1) FROM "events"`)).
+		mock.ExpectQuery(regexp.QuoteMeta(`SELECT count(*) FROM "events"`)).
 			WillReturnRows(sqlmock.NewRows([]string{"count"}).
 				AddRow(1))
 
@@ -54,7 +54,7 @@ func TestEventCreate(t *testing.T) {
 	})
 
 	t.Run("Invalid tags in body", func(t *testing.T) {
-		mock.ExpectQuery(regexp.QuoteMeta(`SELECT count(1) FROM "events"`)).
+		mock.ExpectQuery(regexp.QuoteMeta(`SELECT count(*) FROM "events"`)).
 			WillReturnRows(sqlmock.NewRows([]string{"count"}).
 				AddRow(0))
 
@@ -75,13 +75,13 @@ func TestEventCreate(t *testing.T) {
 	})
 
 	t.Run("Add event in the database", func(t *testing.T) {
-		mock.ExpectQuery(regexp.QuoteMeta(`SELECT count(1) FROM "events"`)).
+		mock.ExpectQuery(regexp.QuoteMeta(`SELECT count(*) FROM "events"`)).
 			WillReturnRows(sqlmock.NewRows([]string{"count"}).
 				AddRow(0))
 
 		mock.ExpectBegin()
 		mock.ExpectQuery(`INSERT INTO "events"`).
-			WithArgs(tests.AnyTime{}, tests.AnyTime{}, nil, 1, 1, Data["name"], Data["tags"]).
+			WithArgs(tests.AnyTime{}, tests.AnyTime{}, nil, 1, 1, Data["name"], Data["event"], Data["tags"]).
 			WillReturnRows(sqlmock.
 				NewRows([]string{"id"}).
 				AddRow(1))

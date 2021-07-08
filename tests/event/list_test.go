@@ -39,8 +39,8 @@ func TestEventList(t *testing.T) {
 	t.Run("get list of events", func(t *testing.T) {
 		mock.ExpectQuery(selectQuery).
 			WillReturnRows(sqlmock.NewRows(Columns).
-				AddRow(1, time.Now(), time.Now(), nil, 1, 1, eventList[0]["name"], eventList[0]["tags"]).
-				AddRow(2, time.Now(), time.Now(), nil, 1, 1, eventList[1]["name"], eventList[1]["tags"]))
+				AddRow(1, time.Now(), time.Now(), nil, 1, 1, eventList[0]["name"], eventList[0]["event"], eventList[0]["tags"]).
+				AddRow(2, time.Now(), time.Now(), nil, 1, 1, eventList[1]["name"], eventList[1]["name"], eventList[1]["tags"]))
 
 		e.GET(basePath).
 			WithHeader("X-User", "1").
@@ -58,8 +58,8 @@ func TestEventList(t *testing.T) {
 	t.Run("get list of events for tags", func(t *testing.T) {
 		mock.ExpectQuery(selectQuery).
 			WillReturnRows(sqlmock.NewRows(Columns).
-				AddRow(1, time.Now(), time.Now(), nil, 1, 1, eventList[0]["name"], eventList[0]["tags"]).
-				AddRow(2, time.Now(), time.Now(), nil, 1, 1, eventList[1]["name"], eventList[1]["tags"]))
+				AddRow(1, time.Now(), time.Now(), nil, 1, 1, eventList[0]["name"], eventList[0]["event"], eventList[0]["tags"]).
+				AddRow(2, time.Now(), time.Now(), nil, 1, 1, eventList[1]["name"], eventList[1]["event"], eventList[1]["tags"]))
 
 		e.GET(basePath).
 			WithHeader("X-User", "1").
