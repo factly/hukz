@@ -22,7 +22,10 @@ func Router() chi.Router {
 
 	r.Get("/", list)
 	r.Get("/logs", logs)
-	r.Post("/", create)
+	r.Route("/space/{space_id}", func(r chi.Router) {
+		r.Post("/", create)
+		r.Get("/check", check)
+	})
 	r.Route("/{webhook_id}", func(r chi.Router) {
 		r.Get("/", details)
 		r.Put("/", update)
