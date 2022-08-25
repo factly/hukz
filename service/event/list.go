@@ -38,7 +38,7 @@ func list(w http.ResponseWriter, r *http.Request) {
 	queryMap := r.URL.Query()
 
 	eventList := make([]model.Event, 0)
-	config.DB.Model(&model.Event{}).Find(&eventList)
+	config.DB.Model(&model.Event{}).Count(&result.Total).Find(&eventList)
 
 	tags := queryMap["tag"]
 	if tags != nil {
@@ -74,7 +74,6 @@ func list(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result.Nodes = result.Nodes[offset:end]
-	result.Total = int64(len(result.Nodes))
 
 	renderx.JSON(w, http.StatusOK, result)
 }
