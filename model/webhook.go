@@ -13,6 +13,7 @@ type Webhook struct {
 	Enabled bool           `gorm:"column:enabled" json:"enabled"`
 	Events  []Event        `gorm:"many2many:webhook_events;" json:"events"`
 	Tags    postgres.Jsonb `gorm:"column:tags" json:"tags" swaggertype:"primitive,string"`
+	SpaceID uint           `gorm:"column:space_id" json:"space_id"`
 }
 
 var webhookUser ContextKey = "webhook_user"

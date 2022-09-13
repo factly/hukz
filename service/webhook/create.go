@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/factly/hukz/config"
 	"github.com/factly/hukz/model"
@@ -13,6 +14,7 @@ import (
 	"github.com/factly/x/middlewarex"
 	"github.com/factly/x/renderx"
 	"github.com/factly/x/validationx"
+	"github.com/go-chi/chi"
 )
 
 // create - Create Webhook
@@ -32,6 +34,14 @@ func create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		loggerx.Error(err)
 		errorx.Render(w, errorx.Parser(errorx.Unauthorized()))
+		return
+	}
+	spaceID := chi.URLParam(r, "space_id")
+	id, err := strconv.Atoi(spaceID)
+
+	if err != nil {
+		loggerx.Error(err)
+		errorx.Render(w, errorx.Parser(errorx.InvalidID()))
 		return
 	}
 
@@ -63,6 +73,7 @@ func create(w http.ResponseWriter, r *http.Request) {
 		URL:     webhook.URL,
 		Enabled: webhook.Enabled,
 		Tags:    webhook.Tags,
+		SpaceID: uint(id),
 	}
 
 	if len(webhook.EventIDs) > 0 {
