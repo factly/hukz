@@ -17,4 +17,6 @@ type WebhookLog struct {
 	Data               postgres.Jsonb `gorm:"column:data" json:"data" swaggertype:"primitive,string"`
 	ResponseBody       postgres.Jsonb `gorm:"column:response_body" json:"response_body" swaggertype:"primitive,string"`
 	Tags               postgres.Jsonb `gorm:"column:tags" json:"tags" swaggertype:"primitive,string"`
+	SpaceID            uint           `gorm:"column:space_id" json:"space_id"`
+	WebhookID          uint           `gorm:"column:webhook_id" json:"webhook_id"`
 }
