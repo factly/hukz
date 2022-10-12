@@ -3,15 +3,16 @@ package webhook
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/factly/hukz/config"
 	"github.com/factly/hukz/model"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/loggerx"
-	"github.com/factly/x/middlewarex"
 	"github.com/factly/x/paginationx"
 	"github.com/factly/x/renderx"
+	"github.com/go-chi/chi"
 )
 
 type paging struct {
@@ -32,11 +33,11 @@ type paging struct {
 // @Success 200 {object} paging
 // @Router /webhooks [get]
 func list(w http.ResponseWriter, r *http.Request) {
-
-	uID, err := middlewarex.GetUser(r.Context())
+	spaceID := chi.URLParam(r, "space_id")
+	id, err := strconv.Atoi(spaceID)
 	if err != nil {
 		loggerx.Error(err)
-		errorx.Render(w, errorx.Parser(errorx.Unauthorized()))
+		errorx.Render(w, errorx.Parser(errorx.InvalidID()))
 		return
 	}
 
@@ -49,7 +50,7 @@ func list(w http.ResponseWriter, r *http.Request) {
 
 	webhookList := make([]model.Webhook, 0)
 	config.DB.Model(&model.Webhook{}).Where(&model.Webhook{
-		Base: model.Base{CreatedByID: uint(uID)},
+		SpaceID: uint(id),
 	}).Count(&result.Total).Preload("Events").Find(&webhookList)
 
 	tags := queryMap["tag"]

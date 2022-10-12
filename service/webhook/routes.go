@@ -20,9 +20,9 @@ var userContext model.ContextKey = "webhook_user"
 func Router() chi.Router {
 	r := chi.NewRouter()
 
-	r.Get("/", list)
 	r.Get("/logs", logs)
 	r.Route("/space/{space_id}", func(r chi.Router) {
+		r.Get("/", list)
 		r.Post("/", create)
 		r.Get("/check", check)
 	})
