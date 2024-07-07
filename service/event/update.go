@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/factly/hukz/config"
@@ -13,10 +12,10 @@ import (
 	"github.com/factly/hukz/util"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/loggerx"
-	"github.com/factly/x/middlewarex"
 	"github.com/factly/x/renderx"
 	"github.com/factly/x/validationx"
 	"github.com/go-chi/chi"
+	"github.com/google/uuid"
 )
 
 // update - Update event by id
@@ -33,7 +32,7 @@ import (
 // @Router /events/{event_id} [put]
 func update(w http.ResponseWriter, r *http.Request) {
 	eventID := chi.URLParam(r, "event_id")
-	id, err := strconv.Atoi(eventID)
+	id, err := uuid.Parse(eventID)
 
 	if err != nil {
 		loggerx.Error(err)
@@ -41,7 +40,7 @@ func update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uID, err := middlewarex.GetUser(r.Context())
+	uID, err := util.GetUser(r.Context())
 	if err != nil {
 		loggerx.Error(err)
 		errorx.Render(w, errorx.Parser(errorx.Unauthorized()))
@@ -63,7 +62,7 @@ func update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := &model.Event{}
-	result.ID = uint(id)
+	result.ID = id
 
 	// check record exists or not
 	if err = config.DB.First(&result).Error; err != nil {
@@ -95,7 +94,7 @@ func update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	updatedEvent := model.Event{
-		Base:  model.Base{UpdatedByID: uint(uID)},
+		Base:  model.Base{UpdatedByID: uID},
 		Name:  event.Name,
 		Event: event.Event,
 		Tags:  event.Tags,

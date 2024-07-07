@@ -1,6 +1,6 @@
 module github.com/factly/hukz
 
-go 1.18
+go 1.20
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
@@ -8,6 +8,7 @@ require (
 	github.com/factly/x v0.0.68
 	github.com/gavv/httpexpect v2.0.0+incompatible
 	github.com/go-chi/chi v4.1.2+incompatible
+	github.com/google/uuid v1.1.2
 	github.com/jinzhu/gorm v1.9.16
 	github.com/nats-io/nats.go v1.10.0
 	github.com/prometheus/client_golang v1.9.0

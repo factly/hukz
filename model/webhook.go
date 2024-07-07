@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/google/uuid"
 	"github.com/jinzhu/gorm/dialects/postgres"
 	"gorm.io/gorm"
 )
@@ -13,7 +14,7 @@ type Webhook struct {
 	Enabled bool           `gorm:"column:enabled" json:"enabled"`
 	Events  []Event        `gorm:"many2many:webhook_events;" json:"events"`
 	Tags    postgres.Jsonb `gorm:"column:tags" json:"tags" swaggertype:"primitive,string"`
-	SpaceID uint           `gorm:"column:space_id" json:"space_id"`
+	SpaceID uuid.UUID      `gorm:"column:space_id" json:"space_id"`
 }
 
 var webhookUser ContextKey = "webhook_user"
@@ -26,9 +27,11 @@ func (wh *Webhook) BeforeCreate(tx *gorm.DB) error {
 	if userID == nil {
 		return nil
 	}
-	uID := userID.(int)
+	uID := userID.(string)
 
-	wh.CreatedByID = uint(uID)
-	wh.UpdatedByID = uint(uID)
+	wh.CreatedByID = uID
+	wh.UpdatedByID = uID
+	wh.ID = uuid.New()
+
 	return nil
 }

@@ -3,12 +3,12 @@ package webhook
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/factly/hukz/config"
 	"github.com/factly/hukz/model"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/loggerx"
+	"github.com/google/uuid"
 
 	//"github.com/factly/x/middlewarex"
 	"github.com/factly/x/renderx"
@@ -33,8 +33,11 @@ func check(w http.ResponseWriter, r *http.Request) {
 
 	event := r.URL.Query().Get("event")
 	spaceID := chi.URLParam(r, "space_id")
-
-	id, err := strconv.Atoi(spaceID)
+	sID, err := uuid.Parse(spaceID)
+	if err != nil {
+		loggerx.Error(err)
+		errorx.Render(w, errorx.Parser(errorx.InvalidID()))
+	}
 
 	if err != nil {
 		loggerx.Error(err)
@@ -44,7 +47,7 @@ func check(w http.ResponseWriter, r *http.Request) {
 
 	webhookList := make([]model.Webhook, 0)
 	config.DB.Model(&model.Webhook{}).Where(&model.Webhook{
-		SpaceID: uint(id),
+		SpaceID: sID,
 	}).Preload("Events").Find(&webhookList)
 	for _, webhook := range webhookList {
 		if result.Enabled {

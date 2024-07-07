@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/google/uuid"
 	"github.com/jinzhu/gorm/dialects/postgres"
 	"gorm.io/gorm"
 )
@@ -24,9 +25,11 @@ func (event *Event) BeforeCreate(tx *gorm.DB) error {
 	if userID == nil {
 		return nil
 	}
-	uID := userID.(int)
+	uID := userID.(string)
 
-	event.CreatedByID = uint(uID)
-	event.UpdatedByID = uint(uID)
+	event.CreatedByID = uID
+	event.UpdatedByID = uID
+	event.ID = uuid.New()
 	return nil
+
 }
