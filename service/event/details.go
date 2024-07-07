@@ -2,7 +2,6 @@ package event
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/factly/hukz/config"
 	"github.com/factly/hukz/model"
@@ -10,6 +9,7 @@ import (
 	"github.com/factly/x/loggerx"
 	"github.com/factly/x/renderx"
 	"github.com/go-chi/chi"
+	"github.com/google/uuid"
 )
 
 // details - Get event by id
@@ -24,7 +24,7 @@ import (
 // @Router /events/{event_id} [get]
 func details(w http.ResponseWriter, r *http.Request) {
 	eventID := chi.URLParam(r, "event_id")
-	id, err := strconv.Atoi(eventID)
+	id, err := uuid.Parse(eventID)
 
 	if err != nil {
 		loggerx.Error(err)
@@ -33,7 +33,7 @@ func details(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := &model.Event{}
-	result.ID = uint(id)
+	result.ID = id
 
 	// check record exists or not
 	if err = config.DB.First(&result).Error; err != nil {

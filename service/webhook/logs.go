@@ -7,9 +7,9 @@ import (
 
 	"github.com/factly/hukz/config"
 	"github.com/factly/hukz/model"
+	"github.com/factly/hukz/util"
 	"github.com/factly/x/errorx"
 	"github.com/factly/x/loggerx"
-	"github.com/factly/x/middlewarex"
 	"github.com/factly/x/paginationx"
 	"github.com/factly/x/renderx"
 )
@@ -33,7 +33,7 @@ type logPaging struct {
 // @Router /webhooks/logs [get]
 func logs(w http.ResponseWriter, r *http.Request) {
 
-	uID, err := middlewarex.GetUser(r.Context())
+	uID, err := util.GetUser(r.Context())
 	if err != nil {
 		loggerx.Error(err)
 		errorx.Render(w, errorx.Parser(errorx.Unauthorized()))
@@ -49,7 +49,7 @@ func logs(w http.ResponseWriter, r *http.Request) {
 
 	webhookLogsList := make([]model.WebhookLog, 0)
 	config.DB.Model(&model.WebhookLog{}).Where(&model.WebhookLog{
-		CreatedByID: uint(uID),
+		CreatedByID: uID,
 	}).Order("created_at DESC").Find(&webhookLogsList)
 
 	tags := queryMap["tag"]

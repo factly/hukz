@@ -3,7 +3,6 @@ package webhook
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/factly/hukz/config"
@@ -13,6 +12,7 @@ import (
 	"github.com/factly/x/paginationx"
 	"github.com/factly/x/renderx"
 	"github.com/go-chi/chi"
+	"github.com/google/uuid"
 )
 
 type paging struct {
@@ -34,7 +34,7 @@ type paging struct {
 // @Router /webhooks [get]
 func list(w http.ResponseWriter, r *http.Request) {
 	spaceID := chi.URLParam(r, "space_id")
-	id, err := strconv.Atoi(spaceID)
+	id, err := uuid.Parse(spaceID)
 	if err != nil {
 		loggerx.Error(err)
 		errorx.Render(w, errorx.Parser(errorx.InvalidID()))
@@ -50,7 +50,7 @@ func list(w http.ResponseWriter, r *http.Request) {
 
 	webhookList := make([]model.Webhook, 0)
 	config.DB.Model(&model.Webhook{}).Where(&model.Webhook{
-		SpaceID: uint(id),
+		SpaceID: id,
 	}).Count(&result.Total).Preload("Events").Find(&webhookList)
 
 	tags := queryMap["tag"]

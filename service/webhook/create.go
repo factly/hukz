@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/factly/hukz/config"
 	"github.com/factly/hukz/model"
@@ -15,6 +14,7 @@ import (
 	"github.com/factly/x/renderx"
 	"github.com/factly/x/validationx"
 	"github.com/go-chi/chi"
+	"github.com/google/uuid"
 )
 
 // create - Create Webhook
@@ -37,7 +37,7 @@ func create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	spaceID := chi.URLParam(r, "space_id")
-	id, err := strconv.Atoi(spaceID)
+	id, err := uuid.Parse(spaceID)
 
 	if err != nil {
 		loggerx.Error(err)
@@ -73,11 +73,23 @@ func create(w http.ResponseWriter, r *http.Request) {
 		URL:     webhook.URL,
 		Enabled: webhook.Enabled,
 		Tags:    webhook.Tags,
-		SpaceID: uint(id),
+		SpaceID: id,
+	}
+
+	eventUUIDs := make([]uuid.UUID, 0)
+
+	for _, id := range webhook.EventIDs {
+		eUUID, err := uuid.Parse(id)
+		if err != nil {
+			loggerx.Error(err)
+			errorx.Render(w, errorx.Parser(errorx.InvalidID()))
+			return
+		}
+		eventUUIDs = append(eventUUIDs, eUUID)
 	}
 
 	if len(webhook.EventIDs) > 0 {
-		config.DB.Model(&model.Event{}).Where(webhook.EventIDs).Find(&result.Events)
+		config.DB.Model(&model.Event{}).Where("id IN ?", eventUUIDs).Find(&result.Events)
 	}
 
 	if err = config.DB.WithContext(context.WithValue(r.Context(), userContext, uID)).Create(&result).Error; err != nil {
