@@ -3,7 +3,7 @@ package util
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -143,7 +143,7 @@ func PostWebhook(wh model.Webhook, event string, whData model.WebhookData) {
 
 	webHookLog.ResponseStatusCode = resp.StatusCode
 
-	body_bytes, err := ioutil.ReadAll(resp.Body)
+	body_bytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
