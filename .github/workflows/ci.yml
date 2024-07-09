@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Use Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         id: setup_go
         with:
           go-version: "1.20"
