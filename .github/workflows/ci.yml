@@ -24,8 +24,8 @@ jobs:
       - run: go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.30.0
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v6
-        # with:
-        #   version: v1.59
+        with:
+          version: v1.59
       # - run: golangci-lint run  ./...
       - run: go test ./tests/... -coverpkg ./service/... -coverprofile=cov.out
       - name: Analyze with SonarCloud
