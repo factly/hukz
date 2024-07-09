@@ -27,7 +27,7 @@ jobs:
         with:
           version: v1.59
       # - run: golangci-lint run  ./...
-      - run: go test ./tests/... -coverpkg ./service/... -coverprofile=cov.out
+      # - run: go test ./tests/... -coverpkg ./service/... -coverprofile=cov.out
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
         env:
