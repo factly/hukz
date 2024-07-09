@@ -26,6 +26,7 @@ func Router() chi.Router {
 		r.Post("/", create)
 		r.Get("/check", check)
 	})
+	r.Get("/space/{space_id}/webhook/{webhook_id}/logs", webhooklogs)
 	r.Route("/{webhook_id}", func(r chi.Router) {
 		r.Get("/", details)
 		r.Put("/", update)

@@ -56,7 +56,6 @@ func FireWebhooks(m *nats.Msg) {
 	whData.CreatedAt = time.Now()
 	whData.Contains = []string{strings.Split(m.Subject, ".")[0]}
 	whData.Payload = payload
-
 	fmt.Printf("Received a [%v] event with data: %v\n", m.Subject, payload)
 
 	// Fetch event id
@@ -86,6 +85,8 @@ func PostWebhook(wh model.Webhook, event string, whData model.WebhookData) {
 		Data:        postgres.Jsonb{RawMessage: bArr},
 		CreatedByID: wh.CreatedByID,
 		Tags:        wh.Tags,
+		SpaceID:     wh.SpaceID,
+		WebhookID:   wh.ID,
 	}
 
 	var resp *http.Response
@@ -153,9 +154,13 @@ func PostWebhook(wh model.Webhook, event string, whData model.WebhookData) {
 		body_bytes = []byte(fmt.Sprint(`{"data":"`, string(body_bytes), `"}`))
 	}
 
-	webHookLog.ResponseBody = postgres.Jsonb{
-		RawMessage: body_bytes,
-	}
+	// if strings.Contains(wh.URL, "eo7uxl0sh2ccz15") {
+	// 	body_bytes = []byte(fmt.Sprint(`{"data":"`, string(body_bytes), `"}`))
+	// }
+
+	// webHookLog.ResponseBody = postgres.Jsonb{
+	// 	RawMessage: body_bytes,
+	// }
 
 	// Create a log entry for webhook
 	config.DB.Create(&webHookLog)
